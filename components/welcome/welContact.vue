@@ -1,9 +1,10 @@
 <template>
   <div>
-    <nuxt />
+    welAContact.vue
   </div>
 </template>
 
+<script>
 export default {
-  layout: 'welcome'
 }
+</script>

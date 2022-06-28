@@ -1,9 +1,10 @@
 <template>
   <div>
-    <nuxt />
+    welAppBar.vue
   </div>
 </template>
 
+<script>
 export default {
-  layout: 'welcome'
 }
+</script>

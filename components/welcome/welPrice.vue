@@ -1,9 +1,10 @@
 <template>
   <div>
-    <nuxt />
+    welPrice.vue
   </div>
 </template>
 
+<script>
 export default {
-  layout: 'welcome'
 }
+</script>
