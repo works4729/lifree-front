@@ -101,50 +101,87 @@
 
 
 <template>
-  <v-app>
-    <wel-app-bar />
-    <v-sheet>
-      <v-container
-        fluid
-        :style="{ maxWidth: '1280px' }"
-      >
-        <v-row
-          v-for="(menu, i) in menus"
-          :key="`menu-${i}`"
+  <v-container fluid>
+    <v-card
+      flat
+      tile
+      color="transparent"
+    >
+      <v-card-title>
+        Usersテーブルの取得
+      </v-card-title>
+      <v-card-text>
+        <v-simple-table dense>
+          <template
+            v-if="users.length"
+            v-slot:default
+          >
+            <thead>
+              <tr>
+                <th
+                  v-for="(key, i) in userKeys"
+                  :key="`key-${i}`"
+                >
+                  {{ key }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(user, i) in users"
+                :key="`user-${i}`"
+              >
+                <td>{{ user.id }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ dateFormat(user.created_at) }}</td>
+              </tr>
+            </tbody>
+          </template>
+          <template v-else>
+            ユーザーが存在しません
+          </template>
+        </v-simple-table>
+      </v-card-text>
+      <v-card-title>
+        Vuetifyの導入（オリジナルカラーの確認）
+      </v-card-title>
+      <v-card-text>
+        <v-btn
+          v-for="(color, i) in colors"
+          :key="`color-${i}`"
+          :color="color"
+          class="mr-2"
         >
-          <v-col cols="12">
-            <div :is="`wel-${menu.title}`" />
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-sheet>
-  </v-app>
+          {{ color }}
+        </v-btn>
+      </v-card-text>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
-import welAbout from '~/components/welcome/welAbout'
-import welProducts from '~/components/welcome/welProducts'
-import welPrice from '~/components/welcome/welPrice'
-import welContact from '~/components/welcome/welContact'
-import welCompany from '~/components/welcome/welCompany'
-
 export default {
-  components: {
-    welAbout,
-    welProducts,
-    welPrice,
-    welContact,
-    welCompany
+  async asyncData ({ $axios }) {
+    let users = []
+    await $axios.$get('/api/v1/users').then(res => (users = res))
+    const userKeys = Object.keys(users[0] || {}) // 追加
+    return { users, userKeys }
   },
+  // data () 追加
   data () {
     return {
-      menus: [
-        { title: 'about', subtitle: 'このサイトはブログ"独学プログラマ"で公開されているチュートリアルのデモアプリケーションです' },
-        { title: 'products', subtitle: '他にはない優れた機能の数々' },
-        { title: 'price', subtitle: '会社の成長に合わせた3つのプラン' },
-        { title: 'contact', subtitle: 'お気軽にご連絡を' },
-        { title: 'company', subtitle: '私たちの会社' }
-      ]
+      colors: ['primary', 'info', 'success', 'warning', 'error', 'background']
+    }
+  },
+  computed: {
+    dateFormat () {
+      return (date) => {
+        const dateTimeFormat = new Intl.DateTimeFormat(
+          'ja', { dateStyle: 'medium', timeStyle: 'short' }
+        )
+        return dateTimeFormat.format(new Date(date))
+      }
     }
   }
 }
